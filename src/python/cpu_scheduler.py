@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Operating Systems - CPU Scheduling Simulator
-COMP6697001 - Final Project
+COMP6697001 - Final Assessment
 
 This script implements Core and Advanced CPU Scheduling Algorithms:
 1. First Come First Serve (FCFS)

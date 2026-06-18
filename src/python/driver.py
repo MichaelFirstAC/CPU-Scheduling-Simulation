@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Operating Systems final project (COMP6697001) - CPU Scheduling CLI Driver
+Operating Systems final assessment (COMP6697001) - CPU Scheduling CLI Driver
 
 This script imports cpu_scheduler.py and runs all required scheduling techniques 
 (FCFS, SJF, SRTF, RR, Priority, MLQ) from custom inputs, outputs comparative 
