@@ -1,8 +1,11 @@
 # PySchedule Simulator — CPU Scheduling Simulator
 
 > **COMP6697001 — Operating Systems | Final Course Project**
+
 > Binus International University
+
 > Students: Michael Arianno C (2802499711) · Timothy Jonathan I (2802521825)
+
 > Lecturer: Dr. Satrio Pradono Suryodiningrat
 
 ---
