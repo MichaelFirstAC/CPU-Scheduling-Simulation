@@ -6,8 +6,100 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+/* =============================================
+   THEME CSS VARIABLES (Dark mode = default)
+   ============================================= */
+:root {
+  /* Backgrounds */
+  --bg-root: #020617;
+  --bg-header: rgba(15, 23, 42, 0.3);
+  --bg-nav: rgba(2, 6, 23, 0.8);
+  --bg-card: rgba(15, 23, 42, 0.4);
+  --bg-card-subtle: rgba(15, 23, 42, 0.3);
+  --bg-input: #020617;
+  --bg-code: rgba(3, 8, 22, 0.7);
+  --bg-inset: rgba(3, 7, 22, 0.6);
+  --bg-tag: #020617;
+
+  /* Borders */
+  --border-primary: #1e293b;
+  --border-subtle: rgba(30, 41, 59, 0.6);
+  --border-input: #1e293b;
+
+  /* Text */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-heading: #ffffff;
+  --text-tag: #64748b;
+  --text-code: #cbd5e1;
+
+  /* Chart / Recharts grid */
+  --chart-grid: #1e293b;
+  --chart-axis: #475569;
+  --chart-tooltip-bg: #0f172a;
+  --chart-tooltip-border: #334155;
+}
+
+/* =============================================
+   LIGHT MODE OVERRIDES
+   ============================================= */
+html.light {
+  --bg-root: #f1f5f9;
+  --bg-header: rgba(255, 255, 255, 0.8);
+  --bg-nav: rgba(248, 250, 252, 0.9);
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-subtle: rgba(255, 255, 255, 0.7);
+  --bg-input: #ffffff;
+  --bg-code: rgba(248, 250, 252, 0.9);
+  --bg-inset: rgba(241, 245, 249, 0.8);
+  --bg-tag: #f8fafc;
+
+  --border-primary: #e2e8f0;
+  --border-subtle: rgba(226, 232, 240, 0.8);
+  --border-input: #cbd5e1;
+
+  --text-primary: #334155;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-heading: #0f172a;
+  --text-tag: #94a3b8;
+  --text-code: #475569;
+
+  --chart-grid: #e2e8f0;
+  --chart-axis: #94a3b8;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e2e8f0;
+}
+
+/* =============================================
+   THEME-AWARE UTILITY CLASSES
+   ============================================= */
+.theme-bg-root        { background-color: var(--bg-root); }
+.theme-bg-header      { background-color: var(--bg-header); }
+.theme-bg-nav         { background-color: var(--bg-nav); }
+.theme-bg-card        { background-color: var(--bg-card); }
+.theme-bg-card-subtle { background-color: var(--bg-card-subtle); }
+.theme-bg-input       { background-color: var(--bg-input); }
+.theme-bg-code        { background-color: var(--bg-code); }
+.theme-bg-inset       { background-color: var(--bg-inset); }
+.theme-bg-tag         { background-color: var(--bg-tag); }
+
+.theme-border         { border-color: var(--border-primary); }
+.theme-border-subtle  { border-color: var(--border-subtle); }
+.theme-border-input   { border-color: var(--border-input); }
+
+.theme-text           { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-text-muted     { color: var(--text-muted); }
+.theme-text-heading   { color: var(--text-heading); }
+.theme-text-tag       { color: var(--text-tag); }
+.theme-text-code      { color: var(--text-code); }
+
+/* =============================================
+   SCROLLBARS
+   ============================================= */
 @layer utilities {
-  /* Elegant ambient scrollbars */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -24,6 +116,16 @@
   }
 }
 
+html.light ::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* =============================================
+   GANTT STRIPES
+   ============================================= */
 .gantt-stripes {
   background-image: repeating-linear-gradient(
     45deg,
@@ -32,4 +134,21 @@
     rgba(255, 255, 255, 0.05) 10px,
     rgba(255, 255, 255, 0.05) 20px
   );
+}
+
+html.light .gantt-stripes {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.04) 10px,
+    rgba(0, 0, 0, 0.04) 20px
+  );
+}
+
+/* =============================================
+   SMOOTH THEME TRANSITION
+   ============================================= */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
 }

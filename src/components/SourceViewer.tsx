@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Terminal, Copy, Download, Code, CheckCircle, FileCode, Loader2 } from "lucide-react";
 
-export default function SourceViewer() {
+interface SourceViewerProps {
+  isDark: boolean;
+}
+
+export default function SourceViewer({ isDark }: SourceViewerProps) {
   const [activeTab, setActiveTab] = useState<"scheduler" | "driver" | "reqs" | "run">("scheduler");
   const [pythonCode, setPythonCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -172,13 +176,13 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
   };
 
   return (
-    <div className="bg-slate-900/30 rounded-2xl border border-slate-800 shadow-md overflow-hidden flex flex-col md:flex-row h-[550px]">
+    <div className="theme-bg-card-subtle rounded-2xl border theme-border shadow-md overflow-hidden flex flex-col md:flex-row h-[550px]">
       {/* Sidebar Tabs */}
-      <div className="w-full md:w-64 bg-slate-950/40 border-b md:border-b-0 md:border-r border-slate-800 p-5 flex flex-col justify-between shrink-0">
+      <div className="w-full md:w-64 theme-bg-card border-b md:border-b-0 md:border-r theme-border p-5 flex flex-col justify-between shrink-0">
         <div className="space-y-4">
           <div>
-            <h3 className="text-xs font-bold text-slate-300 uppercase tracking-widest pl-1 mb-2">Python OS Package</h3>
-            <p className="text-[11px] text-slate-500 leading-relaxed">Download and bundle pristine Python 3 modules to compile and run local laws.</p>
+            <h3 className="text-xs font-bold theme-text uppercase tracking-widest pl-1 mb-2">Python OS Package</h3>
+            <p className="text-[11px] theme-text-secondary leading-relaxed">Download and bundle pristine Python 3 modules to compile and run local laws.</p>
           </div>
 
           <div className="space-y-1.5 font-sans">
@@ -186,8 +190,8 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
               onClick={() => setActiveTab("scheduler")}
               className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
                 activeTab === "scheduler"
-                  ? "bg-indigo-650/15 border-indigo-500/30 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 border-transparent"
+                  ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+                  : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
               }`}
             >
               <FileCode size={13} />
@@ -198,8 +202,8 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
               onClick={() => setActiveTab("driver")}
               className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
                 activeTab === "driver"
-                  ? "bg-indigo-650/15 border-indigo-500/30 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 border-transparent"
+                  ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+                  : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
               }`}
             >
               <FileCode size={13} />
@@ -210,22 +214,22 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
               onClick={() => setActiveTab("reqs")}
               className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
                 activeTab === "reqs"
-                  ? "bg-indigo-650/15 border-indigo-500/30 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 border-transparent"
+                  ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+                  : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
               }`}
             >
               <Code size={13} />
               <span>requirements.txt</span>
             </button>
 
-            <div className="border-t border-slate-800 my-2 pt-2"></div>
+            <div className="border-t theme-border my-2 pt-2"></div>
 
             <button
               onClick={() => setActiveTab("run")}
               className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
                 activeTab === "run"
-                  ? "bg-indigo-650/15 border-indigo-500/30 text-indigo-300 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 border-transparent"
+                  ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
+                  : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
               }`}
             >
               <Terminal size={13} />
@@ -234,31 +238,31 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
           </div>
         </div>
 
-        <div className="mt-6 border-t border-slate-850/80 pt-4 text-[10px] text-slate-500 space-y-1.5 font-mono">
+        <div className="mt-6 border-t theme-border pt-4 text-[10px] theme-text-muted space-y-1.5 font-mono">
           <div className="flex items-center gap-1.5">
             <CheckCircle size={10} className="text-emerald-500" />
-            <span className="text-slate-450 font-bold uppercase">Python 3.x Compliant</span>
+            <span className="theme-text-secondary font-bold uppercase">Python 3.x Compliant</span>
           </div>
           <div>All functions use native sorting loops for timing precision.</div>
         </div>
       </div>
 
       {/* Code Display Sheet */}
-      <div className="flex-1 flex flex-col h-full bg-[#030816]/70 text-slate-300 overflow-hidden">
+      <div className="flex-1 flex flex-col h-full theme-bg-code theme-text-code overflow-hidden">
         {/* Actions head */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-850 bg-slate-950/20 shrink-0 select-none">
-          <span className="text-xs font-mono text-slate-455 pr-2 truncate">{getActiveFileName()}</span>
+        <div className="flex items-center justify-between p-4 border-b theme-border theme-bg-card shrink-0 select-none">
+          <span className="text-xs font-mono theme-text-secondary pr-2 truncate">{getActiveFileName()}</span>
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopy}
-              className="p-1.5 bg-slate-900 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-colors border border-slate-850 flex items-center"
+              className="p-1.5 theme-bg-card-subtle hover:theme-bg-card rounded-lg theme-text-secondary hover:theme-text cursor-pointer transition-colors border theme-border flex items-center"
               title="Copy to Clipboard"
             >
-              {copied ? <span className="text-[9px] text-emerald-400 font-mono px-1">Copied!</span> : <Copy size={13} />}
+              {copied ? <span className="text-[9px] text-emerald-500 font-mono px-1">Copied!</span> : <Copy size={13} />}
             </button>
             <button
               onClick={handleDownload}
-              className="p-1.5 bg-slate-900 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-colors border border-slate-850 flex items-center"
+              className="p-1.5 theme-bg-card-subtle hover:theme-bg-card rounded-lg theme-text-secondary hover:theme-text cursor-pointer transition-colors border theme-border flex items-center"
               title="Download File"
             >
               <Download size={13} />
@@ -267,9 +271,9 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
         </div>
 
         {/* Text View Area */}
-        <div className="flex-1 overflow-y-auto p-6 font-mono text-xs leading-relaxed selection:bg-indigo-900/50 selection:text-white select-text scrollbar-none">
+        <div className="flex-1 overflow-y-auto p-6 font-mono text-xs leading-relaxed selection:bg-indigo-900/50 select-text scrollbar-none">
           {loading ? (
-            <div className="h-full flex items-center justify-center text-slate-500 gap-2">
+            <div className="h-full flex items-center justify-center theme-text-muted gap-2">
               <Loader2 size={16} className="animate-spin text-indigo-400" />
               <span>Resolving package modules...</span>
             </div>

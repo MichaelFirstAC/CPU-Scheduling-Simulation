@@ -5,16 +5,17 @@ import { Play, Pause, SkipForward, SkipBack, RotateCcw, Cpu, CheckCircle, Users 
 interface LiveSimulationProps {
   simulation: SimulationResult | null;
   inputs: Process[];
+  isDark: boolean;
 }
 
-export default function LiveSimulation({ simulation, inputs }: LiveSimulationProps) {
+export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimulationProps) {
   if (!simulation || simulation.timeline.length === 0) {
     return (
-      <div className="bg-slate-900/40 p-12 rounded-2xl border border-slate-800 text-center py-16 text-slate-405 shadow-xl flex flex-col items-center justify-center space-y-4">
-        <Cpu size={32} className="text-slate-650 stroke-1 animate-pulse" />
+      <div className="theme-bg-card p-12 rounded-2xl border theme-border text-center py-16 theme-text-secondary shadow-xl flex flex-col items-center justify-center space-y-4">
+        <Cpu size={32} className="theme-text-muted stroke-1 animate-pulse" />
         <div className="space-y-1">
-          <p className="text-sm font-semibold text-slate-205">No Simulation Data Loaded</p>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm font-semibold theme-text">No Simulation Data Loaded</p>
+          <p className="text-xs theme-text-secondary max-w-sm mx-auto leading-relaxed">
             Please add processes and click "Add to Ready List" first to enable visual tracking.
           </p>
         </div>
@@ -144,7 +145,9 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
   };
 
   const getColorForPid = (pid: string) => {
-    if (pid === "IDLE") return "bg-slate-800 text-slate-400 border-slate-700";
+    if (pid === "IDLE") return isDark
+      ? "bg-slate-800 text-slate-400 border-slate-700"
+      : "bg-slate-200 text-slate-500 border-slate-300";
     const colors: Record<string, string> = {
       P1: "bg-blue-600 text-white border-blue-500",
       P2: "bg-emerald-600 text-white border-emerald-500",
@@ -159,24 +162,24 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
   };
 
   return (
-    <div className="bg-slate-900/40 p-5 rounded-2xl border border-slate-800 shadow-xl space-y-6 animate-fade-in font-sans">
+    <div className="theme-bg-card p-5 rounded-2xl border theme-border shadow-xl space-y-6 animate-fade-in font-sans">
       {/* Simulation Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-850 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b theme-border pb-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest flex items-center gap-2">
+          <h3 className="text-sm font-bold theme-text uppercase tracking-widest flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-[#4f46e5] rounded-full animate-ping"></span>
             Real-Time CPU State Simulator
           </h3>
-          <p className="text-xs text-slate-500 font-sans">Play, pause, or step through the clock to visualize kernel thread state transitions.</p>
+          <p className="text-xs theme-text-secondary font-sans">Play, pause, or step through the clock to visualize kernel thread state transitions.</p>
         </div>
 
         {/* Playback Controls */}
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-1.5 border border-slate-800 bg-slate-950 p-1.5 rounded-xl mr-1">
+          <div className="flex items-center gap-1.5 border theme-border theme-bg-input p-1.5 rounded-xl mr-1">
             <button
               onClick={handleStepBack}
               disabled={currentTime === 0}
-              className="p-1.5 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+              className="p-1.5 rounded-lg hover:theme-bg-card theme-text-secondary hover:theme-text disabled:opacity-30 cursor-pointer transition-colors"
               title="Step Backward"
             >
               <SkipBack size={13} />
@@ -193,15 +196,15 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
             <button
               onClick={handleStepForward}
               disabled={currentTime === totalTime}
-              className="p-1.5 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-white disabled:opacity-30 cursor-pointer transition-colors"
+              className="p-1.5 rounded-lg hover:theme-bg-card theme-text-secondary hover:theme-text disabled:opacity-30 cursor-pointer transition-colors"
               title="Step Forward"
             >
               <SkipForward size={13} />
             </button>
-            <span className="w-px h-4 bg-slate-800 mx-0.5"></span>
+            <span className="w-px h-4 theme-border bg-current opacity-30 mx-0.5"></span>
             <button
               onClick={handleReset}
-              className="p-1.5 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-white cursor-pointer transition-colors"
+              className="p-1.5 rounded-lg hover:theme-bg-card theme-text-secondary hover:theme-text cursor-pointer transition-colors"
               title="Reset"
             >
               <RotateCcw size={13} />
@@ -209,11 +212,11 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-slate-500 font-mono uppercase tracking-wider font-bold">Speed</span>
+            <span className="text-[9px] theme-text-muted font-mono uppercase tracking-wider font-bold">Speed</span>
             <select
               value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
-              className="text-xs text-slate-300 border border-slate-800 rounded-lg px-2.5 py-1.5 bg-slate-950 cursor-pointer focus:outline-none transition-colors hover:border-slate-700"
+              className="text-xs theme-text border theme-border rounded-lg px-2.5 py-1.5 theme-bg-input cursor-pointer focus:outline-none transition-colors hover:border-indigo-400"
             >
               <option value={1500}>0.5x Slow</option>
               <option value={1000}>1.0x Normal</option>
@@ -225,36 +228,36 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
       </div>
 
       {/* Visual State Board */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-950/20 p-5 rounded-2xl border border-slate-850/80">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 theme-bg-inset p-5 rounded-2xl border theme-border-subtle">
         {/* State 1: Ready Queue */}
-        <div className="flex flex-col h-56 bg-slate-900/40 border border-slate-850 rounded-2xl p-4 shadow-md">
-          <div className="flex items-center justify-between mb-3 border-b border-slate-850 pb-2">
-            <h4 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+        <div className="flex flex-col h-56 theme-bg-card border theme-border rounded-2xl p-4 shadow-md">
+          <div className="flex items-center justify-between mb-3 border-b theme-border pb-2">
+            <h4 className="text-[10px] font-bold theme-text uppercase tracking-wider flex items-center gap-1.5">
               <Users size={12} className="text-indigo-400 animate-pulse" />
               <span>Ready Queue (Waiting)</span>
             </h4>
-            <span className="text-[9px] font-mono bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-md font-bold">
+            <span className="text-[9px] font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 px-2 py-0.5 rounded-md font-bold">
               {readyQueue.length}
             </span>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-none">
             {readyQueue.length === 0 ? (
-              <p className="text-[11px] text-slate-500 text-center py-12 italic font-sans">Ready queue stands empty</p>
+              <p className="text-[11px] theme-text-muted text-center py-12 italic font-sans">Ready queue stands empty</p>
             ) : (
               readyQueue.map((p) => (
                 <div
                   key={p.pid}
-                  className="flex items-center justify-between p-2 rounded-lg border border-slate-850 bg-slate-950/60 hover:border-slate-700 transition-all duration-200"
+                  className="flex items-center justify-between p-2 rounded-lg border theme-border theme-bg-card-subtle hover:theme-bg-card transition-all duration-200"
                 >
                   <div className="flex items-center gap-2 font-mono">
                     <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-[10px] ${getColorForPid(p.pid)}`}>
                       {p.pid}
                     </span>
-                    <span className="text-[11px] text-slate-300">Rem: {p.remaining} ms</span>
+                    <span className="text-[11px] theme-text">Rem: {p.remaining} ms</span>
                   </div>
                   <span className={`text-[8px] font-bold uppercase tracking-wider font-mono px-1.5 py-0.5 rounded ${
-                    p.queue_id === 0 ? "bg-amber-500/10 text-amber-300" : "bg-purple-500/10 text-purple-300"
+                    p.queue_id === 0 ? "bg-amber-500/10 text-amber-500" : "bg-purple-500/10 text-purple-400"
                   }`}>
                     Q{p.queue_id}
                   </span>
@@ -265,15 +268,15 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
         </div>
 
         {/* State 2: running CPU */}
-        <div className="flex flex-col h-56 bg-slate-900/40 border-2 border-indigo-500/15 rounded-2xl p-4 shadow-xl relative overflow-hidden justify-between">
+        <div className="flex flex-col h-56 theme-bg-card border-2 border-indigo-500/15 rounded-2xl p-4 shadow-xl relative overflow-hidden justify-between">
           <div className="absolute right-0 top-0 w-24 h-24 bg-indigo-500 rounded-full -mr-10 -mt-10 opacity-[0.03] pointer-events-none"></div>
 
-          <div className="w-full flex items-center justify-between mb-3 border-b border-slate-850 pb-2">
-            <h4 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Cpu size={12} className="text-emerald-400 animate-pulse" />
+          <div className="w-full flex items-center justify-between mb-3 border-b theme-border pb-2">
+            <h4 className="text-[10px] font-bold theme-text uppercase tracking-wider flex items-center gap-1.5">
+              <Cpu size={12} className="text-emerald-500 animate-pulse" />
               <span>Active CPU Core</span>
             </h4>
-            <span className="text-[9px] font-mono bg-emerald-500/10 text-emerald-450 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
+            <span className="text-[9px] font-mono bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-md font-bold uppercase tracking-wider">
               Executing
             </span>
           </div>
@@ -288,54 +291,54 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
               </div>
 
               <div className="w-full space-y-1.5">
-                <div className="flex justify-between text-[11px] font-semibold text-slate-400 px-1 font-mono uppercase tracking-wider text-[9px]">
+                <div className="flex justify-between text-[11px] font-semibold theme-text-secondary px-1 font-mono uppercase tracking-wider text-[9px]">
                   <span>Scheduler Load</span>
                   <span>{activeProcess.pid === "IDLE" ? "N/A" : `${activeProcess.progress}%`}</span>
                 </div>
-                <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-850">
+                <div className="w-full theme-bg-input h-2 rounded-full overflow-hidden border theme-border">
                   <div
                     style={{ width: `${activeProcess.pid === "IDLE" ? 0 : activeProcess.progress}%` }}
-                    className={`h-full transition-[width] ease-out duration-300 ${activeProcess.pid === "IDLE" ? "bg-slate-800" : "bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"}`}
+                    className={`h-full transition-[width] ease-out duration-300 ${activeProcess.pid === "IDLE" ? "bg-slate-400" : "bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"}`}
                   ></div>
                 </div>
-                <div className="text-[9px] text-slate-500 font-mono">
+                <div className="text-[9px] theme-text-muted font-mono">
                   {activeProcess.pid === "IDLE" ? "CPU is currently standing idle" : `Remaining: ${activeProcess.remaining} ms / Duration: ${activeProcess.burst} ms`}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex flex-col justify-center items-center text-slate-500 text-center py-6">
-              <Cpu size={24} className="text-slate-700 animate-pulse mb-1.5" />
-              <p className="text-xs font-semibold text-slate-400">Idle / System Stalled</p>
+            <div className="flex-1 flex flex-col justify-center items-center theme-text-muted text-center py-6">
+              <Cpu size={24} className="theme-text-muted animate-pulse mb-1.5" />
+              <p className="text-xs font-semibold theme-text-secondary">Idle / System Stalled</p>
             </div>
           )}
         </div>
 
         {/* State 3: Completed */}
-        <div className="flex flex-col h-56 bg-slate-900/40 border border-slate-850 rounded-2xl p-4 shadow-md">
-          <div className="flex items-center justify-between mb-3 border-b border-slate-850 pb-2">
-            <h4 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-              <CheckCircle size={12} className="text-slate-455" />
+        <div className="flex flex-col h-56 theme-bg-card border theme-border rounded-2xl p-4 shadow-md">
+          <div className="flex items-center justify-between mb-3 border-b theme-border pb-2">
+            <h4 className="text-[10px] font-bold theme-text uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle size={12} className="theme-text-secondary" />
               <span>Terminated (Completed)</span>
             </h4>
-            <span className="text-[9px] font-mono bg-slate-950 text-slate-400 border border-slate-850 px-2 py-0.5 rounded-md font-bold">
+            <span className="text-[9px] font-mono theme-bg-input theme-text-secondary border theme-border px-2 py-0.5 rounded-md font-bold">
               {completedList.length}
             </span>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-none">
             {completedList.length === 0 ? (
-              <p className="text-[11px] text-slate-500 text-center py-12 italic font-sans block">No threads completed yet</p>
+              <p className="text-[11px] theme-text-muted text-center py-12 italic font-sans block">No threads completed yet</p>
             ) : (
               completedList.map((p) => (
-                <div key={p.pid} className="flex items-center justify-between p-2 rounded-lg border border-slate-850/80 bg-slate-950/30">
+                <div key={p.pid} className="flex items-center justify-between p-2 rounded-lg border theme-border theme-bg-card-subtle">
                   <div className="flex items-center gap-2 font-mono">
                     <span className={`w-5 h-5 rounded flex items-center justify-center font-bold text-[9px] opacity-80 ${getColorForPid(p.pid)}`}>
                       {p.pid}
                     </span>
-                    <span className="text-[11px] text-slate-500 line-through">Exit success</span>
+                    <span className="text-[11px] theme-text-muted line-through">Exit success</span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono">CT: {p.completion} ms</span>
+                  <span className="text-[10px] theme-text-secondary font-mono">CT: {p.completion} ms</span>
                 </div>
               ))
             )}
@@ -346,15 +349,15 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
       {/* Gantt Timeline visualization */}
       <div className="space-y-3 font-sans">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <span className="text-xs font-bold text-slate-300 uppercase tracking-widest pl-1">Timeline / Gantt Chart</span>
-          <span className="text-xs font-mono text-slate-400 bg-slate-950 border border-slate-850 px-3.5 py-1.5 rounded-xl">
+          <span className="text-xs font-bold theme-text uppercase tracking-widest pl-1">Timeline / Gantt Chart</span>
+          <span className="text-xs font-mono theme-text-secondary theme-bg-input border theme-border px-3.5 py-1.5 rounded-xl">
             System Clock: <strong className="font-bold text-indigo-400">{currentTime} ms</strong> / {totalTime} ms
           </span>
         </div>
 
         {/* Timeline blocks */}
-        <div className="w-full overflow-x-auto border border-slate-850 rounded-2xl bg-[#030716]/60 p-5 scrollbar-none">
-          <div className="min-w-full flex h-14 relative border-l border-r border-slate-800">
+        <div className="w-full overflow-x-auto border theme-border rounded-2xl theme-bg-inset p-5 scrollbar-none">
+          <div className="min-w-full flex h-14 relative border-l border-r theme-border">
             {timeline.map((block, index) => {
               const widthPct = ((block.end - block.start) / totalTime) * 100;
               const isCurrent = currentTime >= block.start && currentTime < block.end;
@@ -364,9 +367,9 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
                 <div
                   key={index}
                   style={{ width: `${widthPct}%` }}
-                  className={`relative flex flex-col justify-center items-center h-full border-r border-slate-800/80 font-mono select-none text-[10px] transition-all duration-150 ${
+                  className={`relative flex flex-col justify-center items-center h-full border-r theme-border font-mono select-none text-[10px] transition-all duration-150 ${
                     isCurrent
-                      ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-[#020617] z-10 font-bold opacity-100"
+                      ? "ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent z-10 font-bold opacity-100"
                       : isPast
                       ? "opacity-60"
                       : "opacity-35"
@@ -384,12 +387,12 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
           </div>
 
           <div className="relative w-full h-4 mt-2 mb-1">
-            <span className="absolute left-0 text-[10px] font-mono text-slate-500">0 ms</span>
+            <span className="absolute left-0 text-[10px] font-mono theme-text-muted">0 ms</span>
             {timeline.map((block, index) => (
               <span
                 key={index}
                 style={{ left: `${(block.end / totalTime) * 100}%` }}
-                className="absolute text-[10px] font-mono text-slate-500 transform -translate-x-1/2"
+                className="absolute text-[10px] font-mono theme-text-muted transform -translate-x-1/2"
               >
                 {block.end} ms
               </span>
@@ -407,7 +410,7 @@ export default function LiveSimulation({ simulation, inputs }: LiveSimulationPro
                 setIsPlaying(false);
                 setCurrentTime(Number(e.target.value));
               }}
-              className="w-full accent-indigo-500 h-1.5 bg-slate-950 border border-slate-850 rounded-lg cursor-pointer"
+              className="w-full accent-indigo-500 h-1.5 theme-bg-input border theme-border rounded-lg cursor-pointer"
             />
           </div>
         </div>
