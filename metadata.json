@@ -1,0 +1,6 @@
+{
+  "name": "Python CPU Scheduling Simulator",
+  "description": "An interactive CPU Scheduling Simulator with real-time stepped visualizations, side-by-side performance comparisons, downloadable Python implementations (FCFS, SJF, SRTF, Round Robin, Priority, Multilevel Queue), and live Academic Project Report generator with Gemini AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
