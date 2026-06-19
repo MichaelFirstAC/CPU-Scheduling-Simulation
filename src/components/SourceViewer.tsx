@@ -1,17 +1,34 @@
+/**
+ * SourceViewer.tsx — Python Source Code Package Browser.
+ *
+ * Provides a code viewer panel where users can browse, copy, and download
+ * the Python source files powering this simulator. Uses a two-panel layout:
+ *   Left sidebar: file tab selector (cpu_scheduler.py, driver.py, requirements.txt, CLI instructions)
+ *   Right panel: scrollable code display with Copy and Download action buttons.
+ *
+ * The cpu_scheduler.py source is fetched live from the backend via
+ * GET /api/get-python-code. The other files (driver.py, requirements.txt,
+ * instructions.md) are embedded as static template strings to ensure they
+ * are always available even when the backend is offline.
+ */
 import { useState, useEffect } from "react";
 import { Terminal, Copy, Download, Code, CheckCircle, FileCode, Loader2 } from "lucide-react";
 
+/** Props accepted by the SourceViewer component */
 interface SourceViewerProps {
-  isDark: boolean;
+  isDark: boolean; // Theme mode (not directly used in this component but accepted for API consistency)
 }
 
 export default function SourceViewer({ isDark }: SourceViewerProps) {
+  // Currently visible file tab
   const [activeTab, setActiveTab] = useState<"scheduler" | "driver" | "reqs" | "run">("scheduler");
+  // Python source fetched from backend (cpu_scheduler.py)
   const [pythonCode, setPythonCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);  // Loading state while fetching from backend
+  const [copied, setCopied] = useState(false);    // Clipboard copy confirmation state
 
   // Static strings for driver, requirements, and instructions
+  // These are embedded directly so they work offline without a backend
   const driverCode = `#!/usr/bin/env python3
 """
 Operating Systems final project (COMP6697001) - CPU Scheduling CLI Driver
@@ -116,36 +133,41 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
    The execution terminal prints a structured ASCII Gantt table with average Waiting Time (AWT) and Turnaround time calculations!
 `;
 
+  // Fetch the live Python source code from the backend when the component mounts.
+  // Falls back to a placeholder message if the backend is offline.
   useEffect(() => {
     setLoading(true);
     fetch("/api/get-python-code")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          setPythonCode(data.code);
+          setPythonCode(data.code); // Set actual source from file system
         } else {
           setPythonCode("# Failed to load Python code from backend, demonstrating offline fallback.");
         }
       })
       .catch(() => {
+        // Backend unavailable (e.g. running on local TS-only mode)
         setPythonCode("# Offline mode: failed to load Python code.");
       })
       .finally(() => setLoading(false));
   }, []);
 
+  /** Returns the source code string for the currently active tab */
   const getActiveCode = () => {
     switch (activeTab) {
       case "scheduler":
-        return pythonCode;
+        return pythonCode;      // Live-fetched from backend
       case "driver":
-        return driverCode;
+        return driverCode;      // Static embedded string
       case "reqs":
-        return reqsText;
+        return reqsText;        // Static embedded string
       case "run":
-        return instructionsText;
+        return instructionsText; // Static embedded markdown
     }
   };
 
+  /** Returns the filename to use for the download button based on the active tab */
   const getActiveFileName = () => {
     switch (activeTab) {
       case "scheduler":
@@ -159,12 +181,19 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
     }
   };
 
+  /** handleCopy — Copies the currently displayed code to the clipboard.
+   *  Shows a "Copied!" confirmation label for 2 seconds. */
   const handleCopy = () => {
     navigator.clipboard.writeText(getActiveCode());
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  /**
+   * handleDownload — Downloads the currently displayed code as a text file.
+   * Creates a temporary anchor element with a blob URL and triggers a click.
+   * Cleans up the object URL after the download to avoid memory leaks.
+   */
   const handleDownload = () => {
     const blob = new Blob([getActiveCode()], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);

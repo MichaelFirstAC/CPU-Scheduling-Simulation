@@ -1,15 +1,31 @@
+/**
+ * ProcessManager.tsx — Process Configuration Panel.
+ *
+ * Provides a three-panel UI for managing the simulation's process workload:
+ *   1. "Add Simulation Process" form — input fields to define a new process
+ *      (PID, Arrival Time, Burst Time, Priority, MLQ Queue).
+ *   2. "Algorithm Parameters" settings panel — controls for Round Robin quantum
+ *      and the priority assignment direction (lower vs higher value = higher priority).
+ *   3. "Active Ready Queue" table — lists all configured processes with
+ *      a per-row delete button.
+ *
+ * This component is purely presentational with respect to the simulation — it
+ * delegates all changes upward via onUpdateProcesses callbacks, allowing App.tsx
+ * to trigger a re-simulation whenever the process list changes.
+ */
 import React, { useState } from "react";
 import { Process } from "../types";
 import { Plus, Trash2, Shuffle, AlertCircle } from "lucide-react";
 
+/** Props accepted by the ProcessManager component */
 interface ProcessManagerProps {
-  processes: Process[];
-  onUpdateProcesses: (processes: Process[]) => void;
-  lowerIsHigher: boolean;
-  onUpdateLowerIsHigher: (val: boolean) => void;
-  rrQuantum: number;
-  onUpdateQuantum: (val: number) => void;
-  isDark: boolean;
+  processes: Process[];                              // Current list of processes in the ready queue
+  onUpdateProcesses: (processes: Process[]) => void; // Callback to update the process list in App.tsx
+  lowerIsHigher: boolean;                           // Priority direction setting (Unix vs Windows style)
+  onUpdateLowerIsHigher: (val: boolean) => void;    // Callback to toggle the priority direction
+  rrQuantum: number;                                // Current Round Robin quantum value
+  onUpdateQuantum: (val: number) => void;           // Callback to update the quantum in App.tsx
+  isDark: boolean;                                  // Current theme (not used directly but passed for consistency)
 }
 
 export default function ProcessManager({
@@ -20,13 +36,26 @@ export default function ProcessManager({
   rrQuantum,
   onUpdateQuantum,
 }: ProcessManagerProps) {
-  const [pidInput, setPidInput] = useState(`P${processes.length + 1}`);
-  const [arrivalInput, setArrivalInput] = useState(0);
-  const [burstInput, setBurstInput] = useState(5);
-  const [priorityInput, setPriorityInput] = useState(1);
-  const [queueInput, setQueueInput] = useState(0); // Q0 is RR, Q1 is FCFS
-  const [errorMsg, setErrorMsg] = useState("");
+  // ── Form Input State ───────────────────────────────────────────────
+  const [pidInput, setPidInput] = useState(`P${processes.length + 1}`); // Auto-increments next PID
+  const [arrivalInput, setArrivalInput] = useState(0);   // Default: arrives at t=0
+  const [burstInput, setBurstInput] = useState(5);       // Default: 5ms burst
+  const [priorityInput, setPriorityInput] = useState(1); // Default: priority=1
+  const [queueInput, setQueueInput] = useState(0); // 0 = Q0 (High Priority RR), 1 = Q1 (Low Priority FCFS)
+  const [errorMsg, setErrorMsg] = useState("");     // Validation error message
 
+  /**
+   * handleAddProcess — Validates and adds a new process to the ready queue.
+   *
+   * Validation rules:
+   *   - PID must be non-empty and unique (case-insensitive, normalized to uppercase)
+   *   - arrival_time must be >= 0
+   *   - burst_time must be > 0
+   *
+   * After successful addition, auto-increments the PID and arrival time defaults
+   * to help users quickly enter sequential processes.
+   * The updated list is re-sorted by arrival_time before being passed up.
+   */
   const handleAddProcess = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
@@ -55,6 +84,7 @@ export default function ProcessManager({
       queue_id: Number(queueInput),
     };
 
+    // Add and re-sort by arrival time for consistent display in the table
     const updated = [...processes, newProcess].sort((a, b) => a.arrival_time - b.arrival_time);
     onUpdateProcesses(updated);
 
@@ -68,11 +98,19 @@ export default function ProcessManager({
     setPriorityInput(1);
   };
 
+  /** handleDeleteProcess — Removes a process by its PID from the ready queue. */
   const handleDeleteProcess = (pidToDelete: string) => {
     const updated = processes.filter((p) => p.pid !== pidToDelete);
     onUpdateProcesses(updated);
   };
 
+  /**
+   * handleRandomWorkload — Generates a random set of 4–6 processes.
+   *
+   * Randomizes arrival times, burst times, priorities, and queue assignments
+   * to provide a varied demo workload. Replaces the current process list.
+   * P1 always arrives at t=0 to ensure a valid starting state.
+   */
   const handleRandomWorkload = () => {
     const randomCount = Math.floor(Math.random() * 3) + 4; // 4 to 6 processes
     const generated: Process[] = [];

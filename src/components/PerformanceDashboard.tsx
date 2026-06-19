@@ -1,3 +1,23 @@
+/**
+ * PerformanceDashboard.tsx — Comparative Analytics Dashboard.
+ *
+ * Renders a side-by-side comparison of all 7 scheduling algorithms across
+ * key performance metrics:
+ *   - Average Waiting Time (WT)
+ *   - Average Turnaround Time (TAT)
+ *   - CPU Utilization % (active ticks / total ticks)
+ *   - Throughput (processes completed per ms)
+ *
+ * Displays:
+ *   1. Three overview insight banners: best WT algorithm, best TAT algorithm,
+ *      and a scheduling evaluation note.
+ *   2. Two bar charts (Recharts): WT and TAT across all algorithms.
+ *   3. A detailed comparison matrix table with all metrics for each algorithm.
+ *      The currently active algorithm is highlighted with an indigo left border.
+ *
+ * Receives all simulation results from App.tsx (allResults) and the currently
+ * active algorithm key (activeAlgoKey) for the highlighted row.
+ */
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,10 +30,11 @@ import {
 import { SimulationResult } from "../types";
 import { TrendingDown, ShieldAlert, Award, FileSpreadsheet } from "lucide-react";
 
+/** Props accepted by the PerformanceDashboard component */
 interface PerformanceDashboardProps {
-  allResults: Record<string, SimulationResult> | null;
-  activeAlgoKey: string;
-  isDark: boolean;
+  allResults: Record<string, SimulationResult> | null; // Map of AlgorithmKey -> SimulationResult (null = not simulated yet)
+  activeAlgoKey: string;                               // Currently selected algorithm key (for highlighted row)
+  isDark: boolean;                                     // Theme mode — used for chart colors
 }
 
 export default function PerformanceDashboard({
@@ -37,9 +58,10 @@ export default function PerformanceDashboard({
     );
   }
 
+  // ── Build chart data array from all simulation results ────────────────────
   // Pre-process comparison chart data
   const chartData = Object.entries(allResults).map(([key, res]) => {
-    // Map algorithm keys to nicer visual names
+    // Map algorithm keys to shorter visual names for chart axis labels
     const names: Record<string, string> = {
       FCFS: "FCFS",
       SJF: "SJF (Non-P)",
@@ -82,12 +104,13 @@ export default function PerformanceDashboard({
   const sortedByTurnaround = [...chartData].sort((a, b) => a.turnaround - b.turnaround);
   const bestTAT = sortedByTurnaround[0];
 
+  // ── Chart Theme Colors (derived from isDark prop) ──────────────────────
   // Chart styling based on theme
-  const chartGridColor = isDark ? "#1e293b" : "#e2e8f0";
-  const chartAxisColor = isDark ? "#475569" : "#94a3b8";
-  const tooltipBg = isDark ? "#0f172a" : "#ffffff";
-  const tooltipBorder = isDark ? "#334155" : "#e2e8f0";
-  const tooltipColor = isDark ? "#f1f5f9" : "#0f172a";
+  const chartGridColor = isDark ? "#1e293b" : "#e2e8f0";  // Grid line color
+  const chartAxisColor = isDark ? "#475569" : "#94a3b8";  // Axis tick color
+  const tooltipBg = isDark ? "#0f172a" : "#ffffff";       // Tooltip background
+  const tooltipBorder = isDark ? "#334155" : "#e2e8f0";   // Tooltip border color
+  const tooltipColor = isDark ? "#f1f5f9" : "#0f172a";    // Tooltip text color
 
   return (
     <div className="space-y-6">

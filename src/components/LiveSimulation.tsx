@@ -1,14 +1,34 @@
+/**
+ * LiveSimulation.tsx — Animated, step-by-step CPU state visualizer.
+ *
+ * Renders a real-time, interactive simulation stage that allows the user to:
+ *   - Play/pause automatic clock advancement
+ *   - Step forward or backward one tick at a time
+ *   - Scrub to any clock tick via a range slider
+ *   - Control playback speed (0.5x to 5x)
+ *
+ * At each clock tick, the component derives the current CPU state from the
+ * simulation timeline by computing:
+ *   - Which process is currently executing (activeProcess)
+ *   - Which processes are in the ready queue (readyQueue)
+ *   - Which processes have completed (completedList)
+ *
+ * Also renders a visual Gantt chart where the current block is highlighted
+ * with a pulsing ring to show the active execution position.
+ */
 import { useState, useEffect, useRef } from "react";
 import { SimulationResult, Process } from "../types";
 import { Play, Pause, SkipForward, SkipBack, RotateCcw, Cpu, CheckCircle, Users } from "lucide-react";
 
+/** Props accepted by the LiveSimulation component */
 interface LiveSimulationProps {
-  simulation: SimulationResult | null;
-  inputs: Process[];
-  isDark: boolean;
+  simulation: SimulationResult | null; // The simulation result to visualize (null = empty state)
+  inputs: Process[];                   // Original process definitions (for burst time and arrival info)
+  isDark: boolean;                     // Current theme mode — used for IDLE block color styling
 }
 
 export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimulationProps) {
+  // Guard: render an empty state card if no simulation data is available
   if (!simulation || simulation.timeline.length === 0) {
     return (
       <div className="theme-bg-card p-12 rounded-2xl border theme-border text-center py-16 theme-text-secondary shadow-xl flex flex-col items-center justify-center space-y-4">
@@ -16,7 +36,7 @@ export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimul
         <div className="space-y-1">
           <p className="text-sm font-semibold theme-text">No Simulation Data Loaded</p>
           <p className="text-xs theme-text-secondary max-w-sm mx-auto leading-relaxed">
-            Please add processes and click "Add to Ready List" first to enable visual tracking.
+            Please add processes and click &quot;Add to Ready List&quot; first to enable visual tracking.
           </p>
         </div>
       </div>
@@ -24,12 +44,15 @@ export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimul
   }
 
   const { timeline, processes } = simulation;
+  // Total simulation duration = end time of the very last Gantt block
   const totalTime = timeline[timeline.length - 1].end;
 
-  const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1000); // Ticks per millisecond (1000ms, 500ms, 250ms)
+  // ── Playback State ────────────────────────────────────────────────────────
+  const [currentTime, setCurrentTime] = useState(0);    // Current simulated clock tick
+  const [isPlaying, setIsPlaying] = useState(false);     // Whether auto-play is active
+  const [speed, setSpeed] = useState(1000); // Interval in ms between ticks (lower = faster)
   
+  // Interval-based clock advancement: ticks currentTime by 1 each `speed` milliseconds
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -37,27 +60,42 @@ export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimul
       timerRef.current = setInterval(() => {
         setCurrentTime((prev) => {
           if (prev >= totalTime) {
-            setIsPlaying(false);
+            setIsPlaying(false); // Auto-stop when the simulation ends
             return totalTime;
           }
-          return prev + 1;
+          return prev + 1; // Advance clock by 1 tick
         });
       }, speed);
     } else {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) clearInterval(timerRef.current); // Stop the interval on pause
     }
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) clearInterval(timerRef.current); // Cleanup on unmount or deps change
     };
   }, [isPlaying, speed, totalTime]);
 
-  // If inputs change, reset current time
+  // Reset playback to the beginning when the simulation data changes (new algorithm selected)
   useEffect(() => {
     setCurrentTime(0);
     setIsPlaying(false);
   }, [simulation]);
 
-  // Compute states at currentTime T
+  /**
+   * getStatesAtTime — Derives the CPU state at a given clock tick `t`.
+   *
+   * For each original process, computes how much CPU time has been executed
+   * up to time `t` by summing the overlapping portions of Gantt blocks.
+   * This allows us to determine:
+   *   - Whether the process has arrived (arrival_time <= t)
+   *   - Whether it has completed (remaining == 0)
+   *   - Whether it is currently executing (found in the current Gantt block)
+   *   - Or whether it is waiting in the ready queue
+   *
+   * Also detects IDLE CPU state from the timeline directly.
+   *
+   * @param t - The clock tick to compute state for
+   * @returns { readyQueue, completedList, activeProcess }
+   */
   const getStatesAtTime = (t: number) => {
     const readyQueue: Array<{ pid: string; remaining: number; burst: number; queue_id: number }> = [];
     const completedList: Array<{ pid: string; completion: number }> = [];
@@ -130,20 +168,30 @@ export default function LiveSimulation({ simulation, inputs, isDark }: LiveSimul
 
   const { readyQueue, completedList, activeProcess } = getStatesAtTime(currentTime);
 
+  // ── Playback Control Handlers ─────────────────────────────────────────────
   const handlePlayPause = () => setIsPlaying(!isPlaying);
   const handleReset = () => {
     setCurrentTime(0);
     setIsPlaying(false);
   };
+  // Step back 1 tick (stops auto-play)
   const handleStepBack = () => {
     setIsPlaying(false);
     setCurrentTime(prev => Math.max(0, prev - 1));
   };
+  // Step forward 1 tick (stops auto-play)
   const handleStepForward = () => {
     setIsPlaying(false);
     setCurrentTime(prev => Math.min(totalTime, prev + 1));
   };
 
+  /**
+   * getColorForPid — Returns a Tailwind CSS color class string for a given PID.
+   *
+   * Assigns a consistent color per process ID for the Gantt chart and state cards.
+   * IDLE blocks are always grey. Processes P1–P8 have fixed distinct colors.
+   * Any process beyond P8 defaults to violet.
+   */
   const getColorForPid = (pid: string) => {
     if (pid === "IDLE") return isDark
       ? "bg-slate-800 text-slate-400 border-slate-700"

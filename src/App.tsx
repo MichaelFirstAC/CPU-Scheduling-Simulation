@@ -1,3 +1,15 @@
+/**
+ * App.tsx — Root application component for the CPU Scheduling Simulator.
+ *
+ * This component is the central hub of the application. It:
+ *   1. Manages global application state (processes, algorithm settings, theme, tab).
+ *   2. Orchestrates simulation by calling the backend Python API or falling back
+ *      to the TypeScript scheduler when the backend is offline.
+ *   3. Renders the header, navigation tabs, and the three main content panels:
+ *        - "Interactive Sim Stage"   → ProcessManager + LiveSimulation + metrics table
+ *        - "Comparative Analytics"   → PerformanceDashboard (bar charts + comparison matrix)
+ *        - "Python Source Package"   → SourceViewer (code display with copy/download)
+ */
 import { useState, useEffect } from "react";
 import { defaultProcesses } from "./defaultData";
 import { TSScheduler } from "./utils/scheduler_engine";
@@ -17,6 +29,12 @@ import {
   Moon,
 } from "lucide-react";
 
+/**
+ * Static metadata for all 7 supported scheduling algorithms.
+ * Used to populate the algorithm selector sidebar and the "Concept Spec" description panel.
+ * The `key` field must match the AlgorithmKey union type and the keys returned by
+ * run_all_simulations (Python) and TSScheduler.runAll (TypeScript).
+ */
 const ALGORITHMS: AlgorithmDetail[] = [
   {
     name: "First-Come First-Served (FCFS)",
@@ -70,42 +88,60 @@ const ALGORITHMS: AlgorithmDetail[] = [
 ];
 
 export default function App() {
-  const [processes, setProcesses] = useState<Process[]>(defaultProcesses);
-  const [lowerIsHigher, setLowerIsHigher] = useState<boolean>(true);
-  const [rrQuantum, setRrQuantum] = useState<number>(2);
+  // ── Process State ────────────────────────────────────────────────────────
+  const [processes, setProcesses] = useState<Process[]>(defaultProcesses); // Active process list
+  const [lowerIsHigher, setLowerIsHigher] = useState<boolean>(true);        // Priority mapping direction
+  const [rrQuantum, setRrQuantum] = useState<number>(2);                    // Round Robin time quantum
 
-  const [activeAlgo, setActiveAlgo] = useState<AlgorithmKey>("FCFS");
-  const [currTab, setCurrTab] = useState<"simulate" | "analytics" | "source">("simulate");
+  // ── UI Navigation State ──────────────────────────────────────────────────
+  const [activeAlgo, setActiveAlgo] = useState<AlgorithmKey>("FCFS");                             // Currently selected algorithm
+  const [currTab, setCurrTab] = useState<"simulate" | "analytics" | "source">("simulate");        // Active navigation tab
 
-  const [simulatorResults, setSimulatorResults] = useState<Record<string, SimulationResult> | null>(null);
-  const [calculationSource, setCalculationSource] = useState<string>("");
-  const [triggerCount, setTriggerCount] = useState(0);
-  const [simError, setSimError] = useState("");
-  const [isSimulating, setIsSimulating] = useState(false);
+  // ── Simulation Result State ──────────────────────────────────────────────
+  const [simulatorResults, setSimulatorResults] = useState<Record<string, SimulationResult> | null>(null); // Results map for all 7 algorithms
+  const [calculationSource, setCalculationSource] = useState<string>("");  // "python" or "typescript_fallback_*"
+  const [triggerCount, setTriggerCount] = useState(0);     // Incremented to force re-simulation
+  const [simError, setSimError] = useState("");            // Error message shown in fallback banner
+  const [isSimulating, setIsSimulating] = useState(false); // Loading state while simulation runs
 
   // ── Theme State ──────────────────────────────────────────────────────────
+  // Initialize from localStorage, falling back to the system's color scheme preference
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem("cpu-sim-theme");
     if (saved) return saved === "dark";
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
+  // Sync theme class on <html> element and persist to localStorage whenever isDark changes
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
-      root.classList.remove("light");
+      root.classList.remove("light"); // Dark mode is the default — remove "light" class
     } else {
-      root.classList.add("light");
+      root.classList.add("light");    // Add "light" class to trigger CSS light theme variables
     }
     localStorage.setItem("cpu-sim-theme", isDark ? "dark" : "light");
   }, [isDark]);
 
-  // ── Auto compile and run simulation ─────────────────────────────────────
+  // ── Auto-run simulation on any relevant state change ─────────────────────
+  // Whenever the process list, priority direction, quantum, or triggerCount changes,
+  // automatically re-run all 7 algorithms to keep the results in sync.
   useEffect(() => {
     runCoreSimulation();
   }, [processes, lowerIsHigher, rrQuantum, triggerCount]);
 
+  /**
+   * runCoreSimulation — Triggers a full simulation run across all 7 algorithms.
+   *
+   * Primary path: POST to /api/simulate-python (runs Python subprocess on server).
+   * Fallback path: TSScheduler.runAll() runs directly in the browser using the
+   *   TypeScript mirror implementation, enabling offline / no-backend operation.
+   *
+   * The calculationSource state tracks which path was used and is displayed in
+   * the navigation bar's "Sim Engine" indicator pill.
+   */
   const runCoreSimulation = async () => {
+    // Don't simulate with an empty process list — clear any previous results
     if (processes.length === 0) {
       setSimulatorResults(null);
       setCalculationSource("");
@@ -116,7 +152,7 @@ export default function App() {
     setSimError("");
 
     try {
-      // Perform server-side Python simulation query
+      // Primary path: invoke the Python backend API
       const response = await fetch("/api/simulate-python", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -129,13 +165,15 @@ export default function App() {
 
       const data = await response.json();
       if (data.success) {
+        // Python (or server-side TS fallback) returned results successfully
         setSimulatorResults(data.results);
-        setCalculationSource(data.source);
+        setCalculationSource(data.source); // e.g. "python" or "typescript_fallback_exec_error"
       } else {
         throw new Error(data.error);
       }
     } catch (err: any) {
-      // Local fallback in case Python execution fails or environment is offline
+      // Fallback: API fetch failed entirely (server offline, network error)
+      // Run algorithms directly in the browser using the TypeScript implementation
       const localResults = TSScheduler.runAll(processes, rrQuantum, lowerIsHigher);
       setSimulatorResults(localResults);
       setCalculationSource("typescript_fallback_local");
@@ -145,6 +183,7 @@ export default function App() {
     }
   };
 
+  // Extract the result for the currently selected algorithm (used throughout the Simulate tab)
   const activeResult = simulatorResults ? simulatorResults[activeAlgo] : null;
 
   return (
