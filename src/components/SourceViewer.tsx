@@ -31,7 +31,7 @@ export default function SourceViewer({ isDark }: SourceViewerProps) {
   // These are embedded directly so they work offline without a backend
   const driverCode = `#!/usr/bin/env python3
 """
-Operating Systems final project (COMP6697001) - CPU Scheduling CLI Driver
+Operating Systems final assessment (COMP6697001) - CPU Scheduling CLI Driver
 
 This script imports cpu_scheduler.py and runs all required scheduling techniques 
 (FCFS, SJF, SRTF, RR, Priority, MLQ) from custom inputs, outputs comparative 
@@ -217,11 +217,10 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
           <div className="space-y-1.5 font-sans">
             <button
               onClick={() => setActiveTab("scheduler")}
-              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
-                activeTab === "scheduler"
+              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${activeTab === "scheduler"
                   ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
                   : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
-              }`}
+                }`}
             >
               <FileCode size={13} />
               <span>cpu_scheduler.py</span>
@@ -229,11 +228,10 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
 
             <button
               onClick={() => setActiveTab("driver")}
-              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
-                activeTab === "driver"
+              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${activeTab === "driver"
                   ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
                   : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
-              }`}
+                }`}
             >
               <FileCode size={13} />
               <span>driver.py</span>
@@ -241,11 +239,10 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
 
             <button
               onClick={() => setActiveTab("reqs")}
-              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
-                activeTab === "reqs"
+              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${activeTab === "reqs"
                   ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
                   : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
-              }`}
+                }`}
             >
               <Code size={13} />
               <span>requirements.txt</span>
@@ -255,11 +252,10 @@ We have packaged the scheduler.py and driver.py as clean separate modules.
 
             <button
               onClick={() => setActiveTab("run")}
-              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${
-                activeTab === "run"
+              className={`w-full text-left text-xs py-2.5 px-3.5 rounded-xl font-semibold transition-all flex items-center gap-2 cursor-pointer border ${activeTab === "run"
                   ? "bg-indigo-600/10 border-indigo-500/30 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]"
                   : "theme-text-secondary hover:theme-text hover:theme-bg-card-subtle border-transparent"
-              }`}
+                }`}
             >
               <Terminal size={13} />
               <span>How To Run CLI</span>

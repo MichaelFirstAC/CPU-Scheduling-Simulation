@@ -45,31 +45,41 @@
    LIGHT MODE OVERRIDES
    ============================================= */
 html.light {
-  --bg-root: #f1f5f9;
-  --bg-header: rgba(255, 255, 255, 0.8);
-  --bg-nav: rgba(248, 250, 252, 0.9);
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-card-subtle: rgba(255, 255, 255, 0.7);
+  /* Root page background: a clean blue-grey slate */
+  --bg-root: #eef2f7;
+  /* Header / nav get bright white with a very slight blue tint for structure */
+  --bg-header: rgba(255, 255, 255, 0.98);
+  --bg-nav: rgba(255, 255, 255, 1);
+  /* Cards appear as clean white surfaces above the slate background */
+  --bg-card: rgba(255, 255, 255, 1);
+  --bg-card-subtle: rgba(248, 250, 253, 1);
+  /* Inputs: pure white so they stand out from card backgrounds */
   --bg-input: #ffffff;
-  --bg-code: rgba(248, 250, 252, 0.9);
-  --bg-inset: rgba(241, 245, 249, 0.8);
-  --bg-tag: #f8fafc;
+  /* Code areas: very light blue-grey matching the root */
+  --bg-code: rgba(241, 245, 250, 1);
+  /* Inset: slightly darker than card, used for nested sections / table headers */
+  --bg-inset: rgba(226, 233, 243, 0.9);
+  /* Tags: matching bg-card-subtle */
+  --bg-tag: #f1f5fb;
 
-  --border-primary: #e2e8f0;
-  --border-subtle: rgba(226, 232, 240, 0.8);
-  --border-input: #cbd5e1;
+  /* Borders: clearly visible medium slate — makes cards pop from background */
+  --border-primary: #b8c6d9;
+  --border-subtle: rgba(184, 198, 217, 0.6);
+  --border-input: #94a3b8;
 
-  --text-primary: #334155;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --text-heading: #0f172a;
-  --text-tag: #94a3b8;
-  --text-code: #475569;
+  /* Text: strong dark navy for headings, medium slate for body, light for muted */
+  --text-primary: #1a2942;
+  --text-secondary: #3d5275;
+  --text-muted: #5e7394;
+  --text-heading: #0c1a2e;
+  --text-tag: #5e7394;
+  --text-code: #2d3f58;
 
-  --chart-grid: #e2e8f0;
-  --chart-axis: #94a3b8;
+  /* Chart colors: visible in light */
+  --chart-grid: #dce6f0;
+  --chart-axis: #5e7394;
   --chart-tooltip-bg: #ffffff;
-  --chart-tooltip-border: #e2e8f0;
+  --chart-tooltip-border: #b8c6d9;
 }
 
 /* =============================================
@@ -147,8 +157,29 @@ html.light .gantt-stripes {
 }
 
 /* =============================================
+   LIGHT MODE CARD ELEVATION SHADOWS
+   In dark mode, borders alone separate cards from the bg.
+   In light mode, box-shadows are needed to lift cards off the background.
+   ============================================= */
+html.light .theme-bg-card {
+  box-shadow: 0 1px 4px rgba(60, 80, 120, 0.07), 0 0 0 1px rgba(184, 198, 217, 0.4);
+}
+
+html.light .theme-bg-card-subtle {
+  box-shadow: 0 1px 3px rgba(60, 80, 120, 0.05);
+}
+
+html.light .theme-bg-header {
+  box-shadow: 0 1px 8px rgba(60, 80, 120, 0.09);
+}
+
+html.light .theme-bg-nav {
+  box-shadow: 0 1px 6px rgba(60, 80, 120, 0.08);
+}
+
+/* =============================================
    SMOOTH THEME TRANSITION
    ============================================= */
 *, *::before, *::after {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease, box-shadow 0.2s ease;
 }

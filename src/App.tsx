@@ -193,14 +193,14 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 py-6 md:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-indigo-950/60 text-indigo-300 px-2.5 py-1 rounded-md border border-indigo-900/50 font-mono">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-500 px-2.5 py-1 rounded-md border border-indigo-500/25 font-mono">
                 COMP6697001 - Operating Systems
               </span>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-md border border-amber-500/20 font-mono flex items-center gap-1">
                 <Sparkles size={10} />
                 <span>Final course project</span>
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-950/60 theme-text-secondary px-2.5 py-1 rounded-md border border-green-900/50 font-mono">
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-md border border-emerald-500/25 font-mono">
                 Computer Science Major
               </span>
             </div>
@@ -216,11 +216,11 @@ export default function App() {
           </div>
 
           <div className="shrink-0 flex items-start gap-4">
-            <div className="text-left md:text-right text-xs theme-text-secondary border-l theme-border md:border-l-0 md:border-r border-slate-800 pl-4 md:pl-0 md:pr-4 space-y-0.5 font-mono">
+            <div className="text-left md:text-right text-xs theme-text-secondary border-l theme-border md:border-l-0 md:border-r theme-border pl-4 md:pl-0 md:pr-4 space-y-0.5 font-mono">
               <div><strong className="theme-text font-semibold">Lecturer:</strong> Dr. Satrio Pradono Suryodiningrat</div>
-              <div><strong className="text-indigo-400 font-semibold">University:</strong> Binus International University</div>
-              <div><strong className="text-yellow-500 font-semibold">Student 1:</strong> Michael Arianno C / 2802499711</div>
-              <div><strong className="text-yellow-500 font-semibold">Student 2:</strong> Timothy Jonathan I / 2802521825</div>
+              <div><strong className="text-indigo-500 font-semibold">University:</strong> Binus International University</div>
+              <div><strong className="text-amber-500 font-semibold">Student 1:</strong> Michael Arianno C / 2802499711</div>
+              <div><strong className="text-amber-500 font-semibold">Student 2:</strong> Timothy Jonathan I / 2802521825</div>
             </div>
 
             {/* ── Theme Toggle Button ── */}
@@ -230,7 +230,7 @@ export default function App() {
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               className={`shrink-0 p-2.5 rounded-xl border cursor-pointer transition-all duration-200 ${
                 isDark
-                  ? "bg-slate-800/60 border-slate-700 text-amber-400 hover:bg-slate-700/80 hover:text-amber-300 hover:border-amber-500/30 shadow-inner"
+                  ? "bg-white/5 border-white/10 text-amber-400 hover:bg-white/10 hover:text-amber-300 hover:border-amber-500/30 shadow-inner"
                   : "bg-amber-50 border-amber-200 text-amber-600 hover:bg-amber-100 hover:border-amber-300 shadow-sm"
               }`}
             >
@@ -247,8 +247,8 @@ export default function App() {
             <button
               onClick={() => setCurrTab("simulate")}
               className={`text-xs md:text-sm py-2 px-3.5 md:px-4 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-2 ${currTab === "simulate"
-                ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.15)] font-bold"
-                : "theme-text-secondary hover:theme-text hover:bg-slate-900/20 border border-transparent"
+                ? "bg-indigo-500/10 text-indigo-500 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.1)] font-bold"
+                : "theme-text-secondary hover:theme-text hover:theme-bg-card border border-transparent"
                 }`}
             >
               <Cpu size={14} />
@@ -258,8 +258,8 @@ export default function App() {
             <button
               onClick={() => setCurrTab("analytics")}
               className={`text-xs md:text-sm py-2 px-3.5 md:px-4 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-2 ${currTab === "analytics"
-                ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.15)] font-bold"
-                : "theme-text-secondary hover:theme-text hover:bg-slate-900/20 border border-transparent"
+                ? "bg-indigo-500/10 text-indigo-500 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.1)] font-bold"
+                : "theme-text-secondary hover:theme-text hover:theme-bg-card border border-transparent"
                 }`}
             >
               <TrendingUp size={14} />
@@ -269,8 +269,8 @@ export default function App() {
             <button
               onClick={() => setCurrTab("source")}
               className={`text-xs md:text-sm py-2 px-3.5 md:px-4 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-2 ${currTab === "source"
-                ? "bg-indigo-600/10 text-indigo-400 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.15)] font-bold"
-                : "theme-text-secondary hover:theme-text hover:bg-slate-900/20 border border-transparent"
+                ? "bg-indigo-500/10 text-indigo-500 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.1)] font-bold"
+                : "theme-text-secondary hover:theme-text hover:theme-bg-card border border-transparent"
                 }`}
             >
               <FileCode size={14} />
@@ -349,8 +349,8 @@ export default function App() {
                         <div className="flex items-center justify-between w-full">
                           <span className="truncate">{algo.name}</span>
                           <span className={`text-[8px] font-mono px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter ${algo.type === "core"
-                            ? activeAlgo === algo.key ? "bg-indigo-900/50 text-indigo-200" : "bg-slate-800/60 theme-text-secondary"
-                            : activeAlgo === algo.key ? "bg-violet-900/50 text-violet-200" : "bg-indigo-950/60 text-indigo-400"
+                            ? activeAlgo === algo.key ? "bg-indigo-500/20 text-indigo-300" : "theme-bg-inset theme-text-secondary"
+                            : activeAlgo === algo.key ? "bg-violet-500/20 text-violet-300" : "bg-indigo-500/10 text-indigo-500"
                             }`}>
                             {algo.type}
                           </span>
@@ -382,7 +382,7 @@ export default function App() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="theme-bg-card-subtle border theme-border p-4 rounded-xl shadow-xs font-mono flex flex-col justify-between">
                         <span className="text-[9px] font-mono uppercase theme-text-muted flex items-center gap-1">
-                          <span className="w-1 h-1 bg-slate-400 rounded-full"></span>
+                          <span className="w-1 h-1 theme-bg-inset rounded-full border theme-border"></span>
                           Total Completion
                         </span>
                         <div className="text-lg font-bold theme-text-heading mt-1">

@@ -246,7 +246,7 @@ export default function ProcessManager({
         <div className="mt-5 border-t theme-border pt-4 flex gap-2 font-sans">
           <button
             onClick={handleRandomWorkload}
-            className="flex-1 theme-bg-tag border theme-border hover:bg-slate-900/20 theme-text-secondary hover:theme-text font-bold text-xs py-2 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 theme-bg-tag border theme-border hover:theme-bg-inset theme-text-secondary hover:theme-text font-bold text-xs py-2 rounded-xl cursor-pointer flex items-center justify-center gap-1.5 transition-colors"
           >
             <Shuffle size={13} />
             <span>Random Workload</span>
@@ -368,7 +368,7 @@ export default function ProcessManager({
                     <td className="px-3.5 py-2.5 font-bold theme-text-heading">{p.pid}</td>
                     <td className="px-3.5 py-2.5 text-center theme-text-secondary">{p.arrival_time} ms</td>
                     <td className="px-3.5 py-2.5 text-center theme-text-secondary">{p.burst_time} ms</td>
-                    <td className="px-3.5 py-2.5 text-center text-indigo-400 font-bold">#{p.priority}</td>
+                    <td className="px-3.5 py-2.5 text-center text-indigo-500 font-bold">#{p.priority}</td>
                     <td className="px-3.5 py-2.5 text-center">
                       <span className={`inline-block px-1.5 py-0.5 rounded font-bold text-[8px] tracking-wider font-mono ${
                         p.queue_id === 0
