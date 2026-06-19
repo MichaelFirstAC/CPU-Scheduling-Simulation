@@ -20,6 +20,28 @@ The application runs scheduling computations through a **Python backend engine**
 
 [Click This YouTube Link to Watch!](https://youtu.be/56n1PKvpZ_c)
 
+---
+
+## Screenshots
+
+### Simulation Stage — Gantt Chart Visualizer
+
+![Simulation Stage showing an animated Gantt chart with a running algorithm](docs/main1.png)
+
+![Simulation Stage with per-process metrics table](docs/main2.png)
+
+### Comparative Analytics Dashboard
+
+![Analytics dashboard comparing Average Waiting Time across all algorithms](docs/analysis1.png)
+
+![Analytics dashboard showing Turnaround Time bar charts](docs/analysis2.png)
+
+### Python Source Viewer
+
+![Built-in Python source code browser with syntax highlighting](docs/source.png)
+
+---
+
 ### Algorithms Supported
 
 | Algorithm | Type | Key Characteristic |
