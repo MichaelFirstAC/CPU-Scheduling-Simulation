@@ -16,6 +16,10 @@
 
 The application runs scheduling computations through a **Python backend engine** (`cpu_scheduler.py`) and seamlessly falls back to an **identical TypeScript implementation** if the Python runtime is unavailable — guaranteeing consistent, mathematically correct results in any environment.
 
+### Demo Video Link
+
+[Click This YouTube Link to Watch!](https://youtu.be/56n1PKvpZ_c)
+
 ### Algorithms Supported
 
 | Algorithm | Type | Key Characteristic |
