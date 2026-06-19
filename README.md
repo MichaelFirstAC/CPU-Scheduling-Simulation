@@ -30,11 +30,11 @@ The application runs scheduling computations through a **Python backend engine**
 
 ![Simulation Stage with per-process metrics table](docs/main2.png)
 
+![Analytics dashboard showing Turnaround Time bar charts](docs/main3.png)
+
 ### Comparative Analytics Dashboard
 
 ![Analytics dashboard comparing Average Waiting Time across all algorithms](docs/analysis1.png)
-
-![Analytics dashboard showing Turnaround Time bar charts](docs/analysis2.png)
 
 ### Python Source Viewer
 
